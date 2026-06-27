@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// BreathingSession represents mindful breathing exercise sessions
 type BreathingSession struct {
 	BaseModel
 	UserID           string     `gorm:"type:uuid;not null" json:"user_id"`

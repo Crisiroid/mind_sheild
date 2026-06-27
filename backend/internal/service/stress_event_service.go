@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +15,10 @@ import (
 )
 
 type StressEventService struct {
-	stressRepo *repository.StressEventRepository
+	stressRepo interfaces.StressEventRepositoryInterface
 }
 
-func NewStressEventService(stressRepo *repository.StressEventRepository) *StressEventService {
+func NewStressEventService(stressRepo interfaces.StressEventRepositoryInterface) *StressEventService {
 	return &StressEventService{
 		stressRepo: stressRepo,
 	}
@@ -152,6 +154,18 @@ func (s *StressEventService) buildStressEventFilters(req *schemas.StressEventLis
 
 		return db
 	}
+}
+
+func (s *StressEventService) GetStressStats(ctx context.Context, userID string, dateFrom, dateTo *time.Time) (*repository.StressEventStats, error) {
+	return s.stressRepo.GetStressStats(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *StressEventService) GetIntensityTrend(ctx context.Context, userID string, dateFrom, dateTo time.Time) ([]schemas.TrendDataPoint, error) {
+	return s.stressRepo.GetIntensityTrend(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *StressEventService) GetSituationTypeDistribution(ctx context.Context, userID string) ([]schemas.DistributionStats, error) {
+	return s.stressRepo.GetSituationTypeDistribution(ctx, userID)
 }
 
 func (s *StressEventService) toStressEventResponse(event *models.StressEvent) *schemas.StressEventResponse {

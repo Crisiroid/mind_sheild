@@ -4,21 +4,19 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/golang-jwt/jwt/v5"
+	"psychology-backend/internal/service"
+
 	"github.com/labstack/echo/v4"
 )
 
-// JWTMiddleware represents JWT authentication middleware
 type JWTMiddleware struct {
-	Secret string
+	JWTService *service.JWTService
 }
 
-// NewJWTMiddleware creates a new JWT middleware
-func NewJWTMiddleware(secret string) *JWTMiddleware {
-	return &JWTMiddleware{Secret: secret}
+func NewJWTMiddleware(jwtService *service.JWTService) *JWTMiddleware {
+	return &JWTMiddleware{JWTService: jwtService}
 }
 
-// Authenticate validates JWT token from Authorization header
 func (m *JWTMiddleware) Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		authHeader := c.Request().Header.Get("Authorization")
@@ -31,23 +29,65 @@ func (m *JWTMiddleware) Authenticate(next echo.HandlerFunc) echo.HandlerFunc {
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		if tokenString == authHeader {
 			return c.JSON(http.StatusUnauthorized, map[string]string{
-				"error": "Invalid authorization format",
+				"error": "Invalid authorization format. Use: Bearer <token>",
 			})
 		}
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return []byte(m.Secret), nil
-		})
-
-		if err != nil || !token.Valid {
+		claims, err := m.JWTService.ValidateToken(tokenString)
+		if err != nil {
 			return c.JSON(http.StatusUnauthorized, map[string]string{
 				"error": "Invalid or expired token",
 			})
 		}
 
-		claims := token.Claims.(jwt.MapClaims)
-		c.Set("user_id", claims["user_id"])
-		c.Set("user_role", claims["role"])
+		c.Set("user_id", claims.UserID)
+		c.Set("user_role", claims.UserRole)
+
+		return next(c)
+	}
+}
+
+func (m *JWTMiddleware) RequireUserRole(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		role, ok := c.Get("user_role").(string)
+		if !ok || role != "user" {
+			return c.JSON(http.StatusForbidden, map[string]string{
+				"error": "User access required",
+			})
+		}
+		return next(c)
+	}
+}
+
+func (m *JWTMiddleware) RequireAdminRole(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		role, ok := c.Get("user_role").(string)
+		if !ok || role != "admin" {
+			return c.JSON(http.StatusForbidden, map[string]string{
+				"error": "Admin access required",
+			})
+		}
+		return next(c)
+	}
+}
+
+func (m *JWTMiddleware) OptionalAuth(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		authHeader := c.Request().Header.Get("Authorization")
+		if authHeader == "" {
+			return next(c)
+		}
+
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		if tokenString == authHeader {
+			return next(c)
+		}
+
+		claims, err := m.JWTService.ValidateToken(tokenString)
+		if err == nil {
+			c.Set("user_id", claims.UserID)
+			c.Set("user_role", claims.UserRole)
+		}
 
 		return next(c)
 	}

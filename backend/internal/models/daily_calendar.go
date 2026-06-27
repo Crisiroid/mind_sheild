@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// DailyCalendar represents the 56-day program calendar tracking
 type DailyCalendar struct {
 	BaseModel
 	UserID              string     `gorm:"type:uuid;uniqueIndex:idx_user_day;not null" json:"user_id"`

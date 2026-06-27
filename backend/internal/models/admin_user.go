@@ -1,6 +1,7 @@
 package models
 
-// AdminUser represents admin panel user accounts
+import "time"
+
 type AdminUser struct {
 	BaseModel
 	Username     string `gorm:"type:varchar(50);uniqueIndex;not null" json:"username"`
@@ -10,6 +11,9 @@ type AdminUser struct {
 	RoleID       string `gorm:"type:uuid" json:"role_id,omitempty"`
 	IsActive     bool   `gorm:"default:true" json:"is_active"`
 	LastLogin    string `json:"last_login,omitempty"`
+
+	RefreshToken       string     `gorm:"type:varchar(500)" json:"-"`
+	RefreshTokenExpiry *time.Time `json:"-"`
 }
 
 func (AdminUser) TableName() string {

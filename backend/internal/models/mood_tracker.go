@@ -1,6 +1,5 @@
 package models
 
-// MoodTracker represents mood and activity tracking
 type MoodTracker struct {
 	BaseModel
 	UserID       string `gorm:"type:uuid;not null" json:"user_id"`

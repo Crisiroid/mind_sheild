@@ -50,6 +50,18 @@ func (r *AdminUserRepository) GetByEmail(ctx context.Context, email string) (*mo
 	return &adminUser, nil
 }
 
+func (r *AdminUserRepository) GetByRefreshToken(ctx context.Context, refreshToken string) (*models.AdminUser, error) {
+	var adminUser models.AdminUser
+	err := r.DB.WithContext(ctx).
+		Where("refresh_token = ?", refreshToken).
+		Where("refresh_token_expiry > ?", time.Now()).
+		First(&adminUser).Error
+	if err != nil {
+		return nil, err
+	}
+	return &adminUser, nil
+}
+
 func (r *AdminUserRepository) Update(ctx context.Context, adminUser *models.AdminUser) error {
 	return r.BaseRepository.Update(ctx, adminUser)
 }

@@ -1,6 +1,5 @@
 package models
 
-// AcceptanceExercise represents active acceptance vs surrender exercises
 type AcceptanceExercise struct {
 	BaseModel
 	UserID             string `gorm:"type:uuid;not null" json:"user_id"`

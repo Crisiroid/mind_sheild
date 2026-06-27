@@ -42,6 +42,18 @@ func (r *UserRepository) GetByPhoneNumber(ctx context.Context, phoneNumber strin
 	return &user, nil
 }
 
+func (r *UserRepository) GetByRefreshToken(ctx context.Context, refreshToken string) (*models.User, error) {
+	var user models.User
+	err := r.DB.WithContext(ctx).
+		Where("refresh_token = ?", refreshToken).
+		Where("refresh_token_expiry > ?", time.Now()).
+		First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
 	return r.BaseRepository.Update(ctx, user)
 }

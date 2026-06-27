@@ -11,17 +11,13 @@ func AutoMigrate(db *gorm.DB) error {
 	log.Println("Running database migrations...")
 
 	err := db.AutoMigrate(
-		// User Domain
 		&models.User{},
-		&models.UserSetting{},
 		&models.DailyCalendar{},
 
-		// Emotion & Stress
 		&models.EmotionTriangleInteraction{},
 		&models.StressEvent{},
 		&models.BodyTensionMap{},
 
-		// Exercises & Activities
 		&models.BreathingSession{},
 		&models.CognitiveErrorGame{},
 		&models.MentalMust{},
@@ -32,12 +28,12 @@ func AutoMigrate(db *gorm.DB) error {
 		&models.RoleAndValue{},
 		&models.SkyThought{},
 
-		// Mindfulness
 		&models.MindfulTimer{},
 		&models.AcceptanceExercise{},
 		&models.WeeklyReport{},
 
-		// Admin Panel (with schema)
+		&models.WeeklyMediaContent{},
+
 		&models.AdminUser{},
 		&models.AdminRole{},
 		&models.UserReport{},

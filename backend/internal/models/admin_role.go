@@ -1,6 +1,5 @@
 package models
 
-// AdminRole represents admin roles
 type AdminRole struct {
 	BaseModel
 	RoleName    string `gorm:"type:varchar(50);uniqueIndex;not null" json:"role_name"`

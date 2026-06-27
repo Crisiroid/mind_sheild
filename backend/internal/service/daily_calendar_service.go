@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -14,10 +15,10 @@ import (
 )
 
 type DailyCalendarService struct {
-	dailyCalendarRepo *repository.DailyCalendarRepository
+	dailyCalendarRepo interfaces.DailyCalendarRepositoryInterface
 }
 
-func NewDailyCalendarService(dailyCalendarRepo *repository.DailyCalendarRepository) *DailyCalendarService {
+func NewDailyCalendarService(dailyCalendarRepo interfaces.DailyCalendarRepositoryInterface) *DailyCalendarService {
 	return &DailyCalendarService{
 		dailyCalendarRepo: dailyCalendarRepo,
 	}

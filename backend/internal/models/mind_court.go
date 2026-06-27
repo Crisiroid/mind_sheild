@@ -1,6 +1,5 @@
 package models
 
-// MindCourtEvidence represents mind court evidence records
 type MindCourtEvidence struct {
 	BaseModel
 	UserID                string `gorm:"type:uuid;not null" json:"user_id"`

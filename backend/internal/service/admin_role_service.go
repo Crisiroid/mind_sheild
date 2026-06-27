@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type AdminRoleService struct {
-	adminRoleRepo *repository.AdminRoleRepository
+	adminRoleRepo interfaces.AdminRoleRepositoryInterface
 }
 
-func NewAdminRoleService(adminRoleRepo *repository.AdminRoleRepository) *AdminRoleService {
+func NewAdminRoleService(adminRoleRepo interfaces.AdminRoleRepositoryInterface) *AdminRoleService {
 	return &AdminRoleService{
 		adminRoleRepo: adminRoleRepo,
 	}

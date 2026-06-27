@@ -1,6 +1,5 @@
 package models
 
-// MindfulTimer represents mindful activity timer sessions
 type MindfulTimer struct {
 	BaseModel
 	UserID                  string `gorm:"type:uuid;not null" json:"user_id"`

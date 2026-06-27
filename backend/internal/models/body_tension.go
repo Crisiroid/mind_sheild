@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// BodyTensionMap represents body tension mapping
 type BodyTensionMap struct {
 	BaseModel
 	UserID           string    `gorm:"type:uuid;not null" json:"user_id"`

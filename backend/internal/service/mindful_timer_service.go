@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type MindfulTimerService struct {
-	mindfulTimerRepo *repository.MindfulTimerRepository
+	mindfulTimerRepo interfaces.MindfulTimerRepositoryInterface
 }
 
-func NewMindfulTimerService(mindfulTimerRepo *repository.MindfulTimerRepository) *MindfulTimerService {
+func NewMindfulTimerService(mindfulTimerRepo interfaces.MindfulTimerRepositoryInterface) *MindfulTimerService {
 	return &MindfulTimerService{
 		mindfulTimerRepo: mindfulTimerRepo,
 	}

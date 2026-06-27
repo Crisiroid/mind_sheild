@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +15,10 @@ import (
 )
 
 type BodyTensionService struct {
-	bodyTensionRepo *repository.BodyTensionRepository
+	bodyTensionRepo interfaces.BodyTensionRepositoryInterface
 }
 
-func NewBodyTensionService(bodyTensionRepo *repository.BodyTensionRepository) *BodyTensionService {
+func NewBodyTensionService(bodyTensionRepo interfaces.BodyTensionRepositoryInterface) *BodyTensionService {
 	return &BodyTensionService{
 		bodyTensionRepo: bodyTensionRepo,
 	}
@@ -152,6 +154,18 @@ func (s *BodyTensionService) buildBodyTensionFilters(req *schemas.BodyTensionLis
 
 		return db
 	}
+}
+
+func (s *BodyTensionService) GetAverageIntensity(ctx context.Context, userID string, dateFrom, dateTo *time.Time) (*schemas.IntensityStatsResponse, error) {
+	return s.bodyTensionRepo.GetAverageIntensity(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *BodyTensionService) GetIntensityTrend(ctx context.Context, userID string, dateFrom, dateTo time.Time) ([]schemas.TrendDataPoint, error) {
+	return s.bodyTensionRepo.GetIntensityTrend(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *BodyTensionService) GetSeverityColorDistribution(ctx context.Context, userID string) ([]schemas.DistributionStats, error) {
+	return s.bodyTensionRepo.GetSeverityColorDistribution(ctx, userID)
 }
 
 func (s *BodyTensionService) toBodyTensionResponse(bodyTension *models.BodyTensionMap) *schemas.BodyTensionResponse {

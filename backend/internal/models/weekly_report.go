@@ -1,6 +1,5 @@
 package models
 
-// WeeklyReport represents weekly progress reports
 type WeeklyReport struct {
 	BaseModel
 	UserID                 string  `gorm:"type:uuid;not null" json:"user_id"`

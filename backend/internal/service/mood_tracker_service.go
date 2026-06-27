@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +15,10 @@ import (
 )
 
 type MoodTrackerService struct {
-	moodTrackerRepo *repository.MoodTrackerRepository
+	moodTrackerRepo interfaces.MoodTrackerRepositoryInterface
 }
 
-func NewMoodTrackerService(moodTrackerRepo *repository.MoodTrackerRepository) *MoodTrackerService {
+func NewMoodTrackerService(moodTrackerRepo interfaces.MoodTrackerRepositoryInterface) *MoodTrackerService {
 	return &MoodTrackerService{
 		moodTrackerRepo: moodTrackerRepo,
 	}
@@ -149,6 +151,18 @@ func (s *MoodTrackerService) buildMoodTrackerFilters(req *schemas.MoodTrackerLis
 
 		return db
 	}
+}
+
+func (s *MoodTrackerService) GetMoodStats(ctx context.Context, userID string, dateFrom, dateTo *time.Time) (*repository.MoodTrackerStats, error) {
+	return s.moodTrackerRepo.GetMoodStats(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *MoodTrackerService) GetMoodTrend(ctx context.Context, userID string, dateFrom, dateTo time.Time) ([]repository.MoodTrendPoint, error) {
+	return s.moodTrackerRepo.GetMoodTrend(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *MoodTrackerService) GetActivityEffectiveness(ctx context.Context, userID string) ([]repository.ActivityEffectiveness, error) {
+	return s.moodTrackerRepo.GetActivityEffectiveness(ctx, userID)
 }
 
 func (s *MoodTrackerService) toMoodTrackerResponse(tracker *models.MoodTracker) *schemas.MoodTrackerResponse {

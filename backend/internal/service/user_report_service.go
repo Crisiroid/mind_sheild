@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type UserReportService struct {
-	userReportRepo *repository.UserReportRepository
+	userReportRepo interfaces.UserReportRepositoryInterface
 }
 
-func NewUserReportService(userReportRepo *repository.UserReportRepository) *UserReportService {
+func NewUserReportService(userReportRepo interfaces.UserReportRepositoryInterface) *UserReportService {
 	return &UserReportService{
 		userReportRepo: userReportRepo,
 	}

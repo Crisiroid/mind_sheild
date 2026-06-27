@@ -1,9 +1,22 @@
 package schemas
 
 const (
-	RouteUsers        = "/api/v1/users"
-	RouteUserByID     = "/api/v1/users/:id"
-	RouteUserSettings = "/api/v1/users/:id/settings"
+	RouteUserRegister       = "/api/v1/auth/user/register"
+	RouteUserLogin          = "/api/v1/auth/user/login"
+	RouteUserRefreshToken   = "/api/v1/auth/user/refresh"
+	RouteUserLogout         = "/api/v1/auth/user/logout"
+	RouteUserChangePassword = "/api/v1/auth/user/change-password"
+
+	RouteAdminLogin          = "/api/v1/auth/admin/login"
+	RouteAdminRefreshToken   = "/api/v1/auth/admin/refresh"
+	RouteAdminLogout         = "/api/v1/auth/admin/logout"
+	RouteAdminChangePassword = "/api/v1/auth/admin/change-password"
+)
+
+const (
+	RouteUsers       = "/api/v1/users"
+	RouteUserByID    = "/api/v1/users/:id"
+	RouteUserProfile = "/api/v1/users/me"
 )
 
 const (
@@ -72,12 +85,9 @@ const (
 )
 
 const (
-	RouteAdminLogin = "/api/v1/admin/login"
-)
-
-const (
 	RouteAdminUsers    = "/api/v1/admin/users"
 	RouteAdminUserByID = "/api/v1/admin/users/:id"
+	RouteAdminProfile  = "/api/v1/admin/me"
 )
 
 const (
@@ -89,6 +99,7 @@ const (
 	RouteAdminReports     = "/api/v1/admin/reports"
 	RouteAdminReportsByID = "/api/v1/admin/reports/:id"
 	RouteAdminLogs        = "/api/v1/admin/logs"
+	RouteAdminLogsByID    = "/api/v1/admin/logs/:id"
 )
 
 const (

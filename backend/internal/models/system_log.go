@@ -1,6 +1,5 @@
 package models
 
-// SystemLog represents system activity logs
 type SystemLog struct {
 	BaseModel
 	LogType    string `gorm:"type:varchar(50);not null" json:"log_type"`

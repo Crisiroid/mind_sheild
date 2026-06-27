@@ -1,6 +1,5 @@
 package models
 
-// RoleAndValue represents organizational roles and personal values
 type RoleAndValue struct {
 	BaseModel
 	UserID      string `gorm:"type:uuid;not null" json:"user_id"`

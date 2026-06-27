@@ -28,6 +28,12 @@ type EmotionInteractionListRequest struct {
 	SideClicked *string `query:"side_clicked" form:"side_clicked"`
 }
 
+type EmotionInteractionUpdateRequest struct {
+	SideClicked           *string  `json:"side_clicked,omitempty" validate:"omitempty,oneof=thought body behavior"`
+	ThoughtAccountsViewed []string `json:"thought_accounts_viewed,omitempty"`
+	VibrationTriggered    *bool    `json:"vibration_triggered,omitempty"`
+}
+
 type EmotionInteractionListResponse struct {
 	PaginatedResponse[EmotionInteractionResponse]
 }

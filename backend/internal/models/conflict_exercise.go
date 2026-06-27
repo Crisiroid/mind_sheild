@@ -1,6 +1,5 @@
 package models
 
-// ConflictExercise represents work conflict scenario exercises
 type ConflictExercise struct {
 	BaseModel
 	UserID           string `gorm:"type:uuid;not null" json:"user_id"`

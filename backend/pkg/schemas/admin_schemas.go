@@ -28,6 +28,11 @@ type AdminUpdateRequest struct {
 	IsActive *bool   `json:"is_active,omitempty"`
 }
 
+type AdminUpdateProfileRequest struct {
+	Email    *string `json:"email,omitempty" validate:"omitempty,email"`
+	FullName *string `json:"full_name,omitempty"`
+}
+
 type AdminUserResponse struct {
 	ID        string    `json:"id"`
 	Username  string    `json:"username"`

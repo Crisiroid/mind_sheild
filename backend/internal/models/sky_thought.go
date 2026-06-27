@@ -1,6 +1,5 @@
 package models
 
-// SkyThought represents thought sky cloud entries
 type SkyThought struct {
 	BaseModel
 	UserID      string `gorm:"type:uuid;not null" json:"user_id"`

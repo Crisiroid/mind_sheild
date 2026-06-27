@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type SkyThoughtService struct {
-	skyThoughtRepo *repository.SkyThoughtRepository
+	skyThoughtRepo interfaces.SkyThoughtRepositoryInterface
 }
 
-func NewSkyThoughtService(skyThoughtRepo *repository.SkyThoughtRepository) *SkyThoughtService {
+func NewSkyThoughtService(skyThoughtRepo interfaces.SkyThoughtRepositoryInterface) *SkyThoughtService {
 	return &SkyThoughtService{
 		skyThoughtRepo: skyThoughtRepo,
 	}

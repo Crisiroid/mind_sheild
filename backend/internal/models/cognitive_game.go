@@ -1,6 +1,5 @@
 package models
 
-// CognitiveErrorGame represents cognitive error detection games
 type CognitiveErrorGame struct {
 	BaseModel
 	UserID           string `gorm:"type:uuid;not null" json:"user_id"`

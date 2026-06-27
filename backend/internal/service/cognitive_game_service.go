@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +15,10 @@ import (
 )
 
 type CognitiveGameService struct {
-	cognitiveGameRepo *repository.CognitiveGameRepository
+	cognitiveGameRepo interfaces.CognitiveGameRepositoryInterface
 }
 
-func NewCognitiveGameService(cognitiveGameRepo *repository.CognitiveGameRepository) *CognitiveGameService {
+func NewCognitiveGameService(cognitiveGameRepo interfaces.CognitiveGameRepositoryInterface) *CognitiveGameService {
 	return &CognitiveGameService{
 		cognitiveGameRepo: cognitiveGameRepo,
 	}
@@ -101,6 +103,35 @@ func (s *CognitiveGameService) DeleteCognitiveGame(ctx context.Context, id strin
 	return nil
 }
 
+func (s *CognitiveGameService) UpdateCognitiveGame(ctx context.Context, id string, req *schemas.CognitiveGameUpdateRequest) (*schemas.CognitiveGameResponse, error) {
+	game, err := s.cognitiveGameRepo.GetByID(ctx, id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("بازی شناختی مورد نظر یافت نشد")
+		}
+		return nil, fmt.Errorf("خطا در دریافت بازی شناختی: %w", err)
+	}
+
+	if req.Score != nil {
+		score := *req.Score
+		game.Score = &score
+	}
+	if req.IsCorrect != nil {
+		isCorrect := *req.IsCorrect
+		game.IsCorrect = &isCorrect
+	}
+	if req.TimeTakenSeconds != nil {
+		timeTaken := *req.TimeTakenSeconds
+		game.TimeTakenSeconds = &timeTaken
+	}
+
+	if err := s.cognitiveGameRepo.Update(ctx, game); err != nil {
+		return nil, fmt.Errorf("خطا در بروزرسانی بازی شناختی: %w", err)
+	}
+
+	return s.toCognitiveGameResponse(game), nil
+}
+
 func (s *CognitiveGameService) buildCognitiveGameFilters(req *schemas.CognitiveGameListRequest) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		db = repository.ApplyDateRangeFilter(db, req.DateFrom, req.DateTo)
@@ -121,6 +152,18 @@ func (s *CognitiveGameService) buildCognitiveGameFilters(req *schemas.CognitiveG
 
 		return db
 	}
+}
+
+func (s *CognitiveGameService) GetGameStats(ctx context.Context, userID string, dateFrom, dateTo *time.Time) (*repository.CognitiveGameStats, error) {
+	return s.cognitiveGameRepo.GetGameStats(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *CognitiveGameService) GetScoreTrend(ctx context.Context, userID string, dateFrom, dateTo time.Time) ([]schemas.TrendDataPoint, error) {
+	return s.cognitiveGameRepo.GetScoreTrend(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *CognitiveGameService) GetTimeAnalysis(ctx context.Context, userID string) (*schemas.TimeAnalysisResponse, error) {
+	return s.cognitiveGameRepo.GetTimeAnalysis(ctx, userID)
 }
 
 func (s *CognitiveGameService) toCognitiveGameResponse(game *models.CognitiveErrorGame) *schemas.CognitiveGameResponse {

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type SystemLogService struct {
-	systemLogRepo *repository.SystemLogRepository
+	systemLogRepo interfaces.SystemLogRepositoryInterface
 }
 
-func NewSystemLogService(systemLogRepo *repository.SystemLogRepository) *SystemLogService {
+func NewSystemLogService(systemLogRepo interfaces.SystemLogRepositoryInterface) *SystemLogService {
 	return &SystemLogService{
 		systemLogRepo: systemLogRepo,
 	}

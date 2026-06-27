@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -14,10 +15,10 @@ import (
 )
 
 type EmotionTriangleService struct {
-	emotionRepo *repository.EmotionTriangleRepository
+	emotionRepo interfaces.EmotionTriangleRepositoryInterface
 }
 
-func NewEmotionTriangleService(emotionRepo *repository.EmotionTriangleRepository) *EmotionTriangleService {
+func NewEmotionTriangleService(emotionRepo interfaces.EmotionTriangleRepositoryInterface) *EmotionTriangleService {
 	return &EmotionTriangleService{
 		emotionRepo: emotionRepo,
 	}
@@ -109,6 +110,34 @@ func (s *EmotionTriangleService) DeleteEmotionInteraction(ctx context.Context, i
 	}
 
 	return nil
+}
+
+func (s *EmotionTriangleService) UpdateEmotionInteraction(ctx context.Context, id string, req *schemas.EmotionInteractionUpdateRequest) (*schemas.EmotionInteractionResponse, error) {
+	interaction, err := s.emotionRepo.GetByID(ctx, id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("تعامل احساسی مورد نظر یافت نشد")
+		}
+		return nil, fmt.Errorf("خطا در دریافت تعامل احساسی: %w", err)
+	}
+
+	if req.SideClicked != nil {
+		interaction.SideClicked = *req.SideClicked
+	}
+	if req.ThoughtAccountsViewed != nil {
+		if data, err := json.Marshal(req.ThoughtAccountsViewed); err == nil {
+			interaction.ThoughtAccountsViewed = string(data)
+		}
+	}
+	if req.VibrationTriggered != nil {
+		interaction.VibrationTriggered = *req.VibrationTriggered
+	}
+
+	if err := s.emotionRepo.Update(ctx, interaction); err != nil {
+		return nil, fmt.Errorf("خطا در بروزرسانی تعامل احساسی: %w", err)
+	}
+
+	return s.toEmotionInteractionResponse(interaction), nil
 }
 
 func (s *EmotionTriangleService) buildEmotionInteractionFilters(req *schemas.EmotionInteractionListRequest) func(*gorm.DB) *gorm.DB {

@@ -1,6 +1,5 @@
 package models
 
-// NegativeThought represents negative thought radar entries
 type NegativeThought struct {
 	BaseModel
 	UserID             string `gorm:"type:uuid;not null" json:"user_id"`

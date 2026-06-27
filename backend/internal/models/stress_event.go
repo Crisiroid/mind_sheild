@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// StressEvent represents work-related stress event registrations
 type StressEvent struct {
 	BaseModel
 	UserID               string    `gorm:"type:uuid;not null" json:"user_id"`

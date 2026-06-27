@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +15,10 @@ import (
 )
 
 type BreathingService struct {
-	breathingRepo *repository.BreathingRepository
+	breathingRepo interfaces.BreathingRepositoryInterface
 }
 
-func NewBreathingService(breathingRepo *repository.BreathingRepository) *BreathingService {
+func NewBreathingService(breathingRepo interfaces.BreathingRepositoryInterface) *BreathingService {
 	return &BreathingService{
 		breathingRepo: breathingRepo,
 	}
@@ -145,6 +147,18 @@ func (s *BreathingService) buildBreathingSessionFilters(req *schemas.BreathingSe
 
 		return db
 	}
+}
+
+func (s *BreathingService) GetSessionStats(ctx context.Context, userID string, dateFrom, dateTo *time.Time) (*repository.BreathingSessionStats, error) {
+	return s.breathingRepo.GetSessionStats(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *BreathingService) GetDurationTrend(ctx context.Context, userID string, dateFrom, dateTo time.Time) ([]schemas.TrendDataPoint, error) {
+	return s.breathingRepo.GetDurationTrend(ctx, userID, dateFrom, dateTo)
+}
+
+func (s *BreathingService) GetPatternUsage(ctx context.Context, userID string) ([]schemas.DistributionStats, error) {
+	return s.breathingRepo.GetPatternUsage(ctx, userID)
 }
 
 func (s *BreathingService) toBreathingSessionResponse(session *models.BreathingSession) *schemas.BreathingSessionResponse {

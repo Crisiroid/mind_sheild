@@ -5,6 +5,9 @@ bin/
 # Environment files
 .env
 
+# Uploads
+uploads/
+
 # IDE
 .vscode/
 .idea/

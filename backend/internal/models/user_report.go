@@ -1,6 +1,5 @@
 package models
 
-// UserReport represents anonymized user reports
 type UserReport struct {
 	BaseModel
 	ReportType         string  `gorm:"type:varchar(50);not null" json:"report_type"`

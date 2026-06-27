@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type WeeklyReportService struct {
-	weeklyReportRepo *repository.WeeklyReportRepository
+	weeklyReportRepo interfaces.WeeklyReportRepositoryInterface
 }
 
-func NewWeeklyReportService(weeklyReportRepo *repository.WeeklyReportRepository) *WeeklyReportService {
+func NewWeeklyReportService(weeklyReportRepo interfaces.WeeklyReportRepositoryInterface) *WeeklyReportService {
 	return &WeeklyReportService{
 		weeklyReportRepo: weeklyReportRepo,
 	}

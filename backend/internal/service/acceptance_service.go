@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type AcceptanceService struct {
-	acceptanceRepo *repository.AcceptanceRepository
+	acceptanceRepo interfaces.AcceptanceRepositoryInterface
 }
 
-func NewAcceptanceService(acceptanceRepo *repository.AcceptanceRepository) *AcceptanceService {
+func NewAcceptanceService(acceptanceRepo interfaces.AcceptanceRepositoryInterface) *AcceptanceService {
 	return &AcceptanceService{
 		acceptanceRepo: acceptanceRepo,
 	}

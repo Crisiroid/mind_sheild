@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -14,14 +15,16 @@ import (
 )
 
 type AdminUserService struct {
-	adminUserRepo *repository.AdminUserRepository
-	adminRoleRepo *repository.AdminRoleRepository
+	adminUserRepo   interfaces.AdminUserRepositoryInterface
+	adminRoleRepo   interfaces.AdminRoleRepositoryInterface
+	passwordService *PasswordService
 }
 
-func NewAdminUserService(adminUserRepo *repository.AdminUserRepository, adminRoleRepo *repository.AdminRoleRepository) *AdminUserService {
+func NewAdminUserService(adminUserRepo interfaces.AdminUserRepositoryInterface, adminRoleRepo interfaces.AdminRoleRepositoryInterface, passwordService *PasswordService) *AdminUserService {
 	return &AdminUserService{
-		adminUserRepo: adminUserRepo,
-		adminRoleRepo: adminRoleRepo,
+		adminUserRepo:   adminUserRepo,
+		adminRoleRepo:   adminRoleRepo,
+		passwordService: passwordService,
 	}
 }
 
@@ -54,10 +57,15 @@ func (s *AdminUserService) CreateAdminUser(ctx context.Context, req *schemas.Adm
 		}
 	}
 
+	passwordHash, err := s.passwordService.HashPassword(req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("خطا در رمزنگاری رمز عبور: %w", err)
+	}
+
 	adminUser := &models.AdminUser{
 		Username:     req.Username,
 		Email:        req.Email,
-		PasswordHash: req.Password,
+		PasswordHash: passwordHash,
 		FullName:     req.FullName,
 		RoleID:       req.RoleID,
 		IsActive:     req.IsActive,
@@ -320,4 +328,44 @@ func (s *AdminUserService) toAdminUserResponse(adminUser *models.AdminUser) *sch
 		CreatedAt: adminUser.CreatedAt,
 		UpdatedAt: adminUser.UpdatedAt,
 	}
+}
+
+func (s *AdminUserService) GetAdminProfile(ctx context.Context, adminID string) (*schemas.AdminUserResponse, error) {
+	admin, err := s.adminUserRepo.GetByID(ctx, adminID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("مدیر یافت نشد")
+		}
+		return nil, fmt.Errorf("خطا در دریافت مدیر: %w", err)
+	}
+
+	return s.toAdminUserResponse(admin), nil
+}
+
+func (s *AdminUserService) UpdateAdminProfile(ctx context.Context, adminID string, req *schemas.AdminUpdateProfileRequest) (*schemas.AdminUserResponse, error) {
+	admin, err := s.adminUserRepo.GetByID(ctx, adminID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("مدیر یافت نشد")
+		}
+		return nil, fmt.Errorf("خطا در دریافت مدیر: %w", err)
+	}
+
+	if req.Email != nil {
+		existingAdmin, err := s.adminUserRepo.GetByEmail(ctx, *req.Email)
+		if err == nil && existingAdmin.ID.String() != adminID {
+			return nil, errors.New("این ایمیل قبلاً ثبت شده است")
+		}
+		admin.Email = *req.Email
+	}
+
+	if req.FullName != nil {
+		admin.FullName = *req.FullName
+	}
+
+	if err := s.adminUserRepo.Update(ctx, admin); err != nil {
+		return nil, fmt.Errorf("خطا در بروزرسانی مدیر: %w", err)
+	}
+
+	return s.toAdminUserResponse(admin), nil
 }

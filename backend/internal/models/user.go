@@ -2,10 +2,10 @@ package models
 
 import "time"
 
-// User represents a user account in the psychology app
 type User struct {
 	BaseModel
 	PhoneNumber         string     `gorm:"type:varchar(20);uniqueIndex;not null" json:"phone_number"`
+	PasswordHash        string     `gorm:"type:varchar(255);not null" json:"-"`
 	RegistrationDate    time.Time  `gorm:"autoCreateTime" json:"registration_date"`
 	LastLogin           *time.Time `json:"last_login,omitempty"`
 	LoginCount          int        `gorm:"default:1" json:"login_count"`
@@ -18,8 +18,8 @@ type User struct {
 	AndroidVersion      string     `gorm:"type:varchar(10)" json:"android_version,omitempty"`
 	AppVersion          string     `gorm:"type:varchar(10)" json:"app_version,omitempty"`
 
-	// Relationships
-	Settings UserSetting `gorm:"foreignKey:UserID" json:"settings,omitempty"`
+	RefreshToken       string     `gorm:"type:varchar(500)" json:"-"`
+	RefreshTokenExpiry *time.Time `json:"-"`
 }
 
 func (User) TableName() string {

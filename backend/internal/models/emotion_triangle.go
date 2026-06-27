@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// EmotionTriangleInteraction represents emotion triangle usage
 type EmotionTriangleInteraction struct {
 	BaseModel
 	UserID                string    `gorm:"type:uuid;not null" json:"user_id"`

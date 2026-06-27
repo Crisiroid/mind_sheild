@@ -63,6 +63,12 @@ type CognitiveGameResponse struct {
 	UpdatedAt        time.Time `json:"updated_at"`
 }
 
+type CognitiveGameUpdateRequest struct {
+	Score            *int  `json:"score,omitempty"`
+	IsCorrect        *bool `json:"is_correct,omitempty"`
+	TimeTakenSeconds *int  `json:"time_taken_seconds,omitempty"`
+}
+
 type CognitiveGameListRequest struct {
 	PaginatedRequest
 	FilterRequest

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type ConflictExerciseService struct {
-	conflictRepo *repository.ConflictExerciseRepository
+	conflictRepo interfaces.ConflictExerciseRepositoryInterface
 }
 
-func NewConflictExerciseService(conflictRepo *repository.ConflictExerciseRepository) *ConflictExerciseService {
+func NewConflictExerciseService(conflictRepo interfaces.ConflictExerciseRepositoryInterface) *ConflictExerciseService {
 	return &ConflictExerciseService{
 		conflictRepo: conflictRepo,
 	}

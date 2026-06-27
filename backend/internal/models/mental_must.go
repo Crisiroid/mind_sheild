@@ -1,6 +1,5 @@
 package models
 
-// MentalMust represents mental "musts" backpack entries
 type MentalMust struct {
 	BaseModel
 	UserID       string `gorm:"type:uuid;not null" json:"user_id"`

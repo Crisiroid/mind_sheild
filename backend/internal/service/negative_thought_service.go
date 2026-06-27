@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type NegativeThoughtService struct {
-	negativeThoughtRepo *repository.NegativeThoughtRepository
+	negativeThoughtRepo interfaces.NegativeThoughtRepositoryInterface
 }
 
-func NewNegativeThoughtService(negativeThoughtRepo *repository.NegativeThoughtRepository) *NegativeThoughtService {
+func NewNegativeThoughtService(negativeThoughtRepo interfaces.NegativeThoughtRepositoryInterface) *NegativeThoughtService {
 	return &NegativeThoughtService{
 		negativeThoughtRepo: negativeThoughtRepo,
 	}

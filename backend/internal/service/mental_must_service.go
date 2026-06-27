@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"psychology-backend/internal/interfaces"
 	"psychology-backend/internal/models"
 	"psychology-backend/internal/repository"
 	"psychology-backend/pkg/schemas"
@@ -13,10 +14,10 @@ import (
 )
 
 type MentalMustService struct {
-	mentalMustRepo *repository.MentalMustRepository
+	mentalMustRepo interfaces.MentalMustRepositoryInterface
 }
 
-func NewMentalMustService(mentalMustRepo *repository.MentalMustRepository) *MentalMustService {
+func NewMentalMustService(mentalMustRepo interfaces.MentalMustRepositoryInterface) *MentalMustService {
 	return &MentalMustService{
 		mentalMustRepo: mentalMustRepo,
 	}
