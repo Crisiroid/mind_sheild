@@ -188,7 +188,7 @@ func (s *AuthService) AdminLogin(ctx context.Context, req *schemas.AdminLoginReq
 	now := time.Now()
 	admin.LastLogin = now.Format(time.RFC3339)
 	if err := s.adminRepo.Update(ctx, admin); err != nil {
-		fmt.Printf("Warning: failed to update last login for admin %s: %v\n", admin.ID, err)
+		return nil, fmt.Errorf("failed to update last login for admin %s: %w", admin.ID, err)
 	}
 
 	return s.generateAdminTokens(ctx, admin)
@@ -290,7 +290,7 @@ func (s *AuthService) generateUserTokens(ctx context.Context, user *models.User)
 	user.RefreshToken = refreshToken
 	user.RefreshTokenExpiry = &expiry
 	if err := s.userRepo.Update(ctx, user); err != nil {
-		fmt.Printf("Warning: failed to save refresh token for user %s: %v\n", user.ID, err)
+		return nil, fmt.Errorf("failed to save refresh token for user %s: %w", user.ID, err)
 	}
 
 	return &schemas.UserLoginResponse{
@@ -316,7 +316,7 @@ func (s *AuthService) generateAdminTokens(ctx context.Context, admin *models.Adm
 	admin.RefreshToken = refreshToken
 	admin.RefreshTokenExpiry = &expiry
 	if err := s.adminRepo.Update(ctx, admin); err != nil {
-		fmt.Printf("Warning: failed to save refresh token for admin %s: %v\n", admin.ID, err)
+		return nil, fmt.Errorf("failed to save refresh token for admin %s: %w", admin.ID, err)
 	}
 
 	return &schemas.AdminAuthLoginResponse{

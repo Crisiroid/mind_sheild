@@ -18,8 +18,8 @@ type User struct {
 	AndroidVersion      string     `gorm:"type:varchar(10)" json:"android_version,omitempty"`
 	AppVersion          string     `gorm:"type:varchar(10)" json:"app_version,omitempty"`
 
-	RefreshToken       string     `gorm:"type:varchar(500)" json:"-"`
-	RefreshTokenExpiry *time.Time `json:"-"`
+	RefreshToken       string     `gorm:"type:varchar(500);column:refresh_token" json:"-"`
+	RefreshTokenExpiry *time.Time `gorm:"column:refresh_token_expiry" json:"-"`
 }
 
 func (User) TableName() string {

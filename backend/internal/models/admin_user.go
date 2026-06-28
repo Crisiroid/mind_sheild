@@ -8,12 +8,12 @@ type AdminUser struct {
 	Email        string `gorm:"type:varchar(100);uniqueIndex;not null" json:"email"`
 	PasswordHash string `gorm:"type:varchar(255);not null" json:"-"`
 	FullName     string `gorm:"type:varchar(100)" json:"full_name,omitempty"`
-	RoleID       string `gorm:"type:uuid" json:"role_id,omitempty"`
+	RoleID       string `gorm:"type:uuid;default:null" json:"role_id,omitempty"`
 	IsActive     bool   `gorm:"default:true" json:"is_active"`
 	LastLogin    string `json:"last_login,omitempty"`
 
-	RefreshToken       string     `gorm:"type:varchar(500)" json:"-"`
-	RefreshTokenExpiry *time.Time `json:"-"`
+	RefreshToken       string     `gorm:"type:varchar(500);column:refresh_token" json:"-"`
+	RefreshTokenExpiry *time.Time `gorm:"column:refresh_token_expiry" json:"-"`
 }
 
 func (AdminUser) TableName() string {

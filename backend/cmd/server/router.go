@@ -35,19 +35,20 @@ func SetupRoutes(
 	e.GET("/health", healthCheckHandler)
 	e.GET("/api/v1/public/health", publicHealthCheckHandler)
 
-	setupAuthRoutes(e, authHandler)
+	setupAuthRoutes(e, authHandler, adminHandler)
 
 	setupUserRoutes(e, authHandler, userHandler, calendarHandler, emotionHandler, breathingHandler, cognitiveHandler, mentalMustHandler, negativeThoughtHandler, mindCourtHandler, conflictExerciseHandler, moodTrackerHandler, roleValueHandler, skyThoughtHandler, mindfulnessHandler, reportHandler, mediaContentHandler, jwtMiddleware)
 
 	setupAdminRoutes(e, authHandler, adminHandler, userHandler, calendarHandler, emotionHandler, breathingHandler, cognitiveHandler, mentalMustHandler, negativeThoughtHandler, mindCourtHandler, conflictExerciseHandler, moodTrackerHandler, roleValueHandler, skyThoughtHandler, mindfulnessHandler, reportHandler, mediaContentHandler, jwtMiddleware)
 }
 
-func setupAuthRoutes(e *echo.Echo, authHandler *handler.AuthHandler) {
+func setupAuthRoutes(e *echo.Echo, authHandler *handler.AuthHandler, adminHandler *handler.AdminHandler) {
 	e.POST(schemas.RouteUserRegister, authHandler.UserRegister)
 	e.POST(schemas.RouteUserLogin, authHandler.UserLogin)
 	e.POST(schemas.RouteUserRefreshToken, authHandler.UserRefreshToken)
 	e.POST(schemas.RouteAdminLogin, authHandler.AdminLogin)
 	e.POST(schemas.RouteAdminRefreshToken, authHandler.AdminRefreshToken)
+
 }
 
 func setupUserRoutes(
@@ -131,8 +132,8 @@ func setupAdminRoutes(
 	adminApi := e.Group("/api/v1")
 	adminApi.Use(jwtMiddleware.Authenticate, jwtMiddleware.RequireAdminRole)
 
-	adminApi.GET(schemas.RouteAdminProfile, adminHandler.GetAdminProfile)
-	adminApi.PUT(schemas.RouteAdminProfile, adminHandler.UpdateAdminProfile)
+	adminApi.GET("/admin/me", adminHandler.GetAdminProfile)
+	adminApi.PUT("/admin/me", adminHandler.UpdateAdminProfile)
 
 	setupAdminUserRoutes(adminApi, userHandler)
 
@@ -140,8 +141,8 @@ func setupAdminRoutes(
 
 	setupAdminRoleRoutes(adminApi, adminHandler)
 
-	adminApi.GET(schemas.RouteAdminLogs, adminHandler.ListSystemLogs)
-	adminApi.GET(schemas.RouteAdminLogsByID, adminHandler.GetSystemLogByID)
+	adminApi.GET("/admin/logs", adminHandler.ListSystemLogs)
+	adminApi.GET("/admin/logs/:id", adminHandler.GetSystemLogByID)
 
 	setupAdminReportRoutes(adminApi, reportHandler)
 
@@ -281,51 +282,51 @@ func setupUserReportRoutes(g *echo.Group, reportHandler *handler.ReportHandler) 
 }
 
 func setupAdminUserRoutes(g *echo.Group, userHandler *handler.UserHandler) {
-	g.GET(schemas.RouteUsers, userHandler.ListUsers)
-	g.DELETE(schemas.RouteUserByID, userHandler.DeleteUser)
-	g.GET("/api/v1/users/by-phone", userHandler.GetUserByPhoneNumber)
-	g.GET("/api/v1/users/stats", userHandler.GetUserStats)
-	g.GET("/api/v1/users/activity-trend", userHandler.GetUserActivityTrend)
-	g.GET("/api/v1/users/login-analytics", userHandler.GetLoginAnalytics)
-	g.GET("/api/v1/users/agreement-stats", userHandler.GetAgreementStats)
-	g.GET("/api/v1/users/app-version-distribution", userHandler.GetAppVersionDistribution)
-	g.GET("/api/v1/users/inactive", userHandler.GetInactiveUsers)
-	g.GET("/api/v1/users/engagement", userHandler.GetUserEngagement)
-	g.GET("/api/v1/users/export", userHandler.ExportUsers)
+	g.GET("/users", userHandler.ListUsers)
+	g.DELETE("/users/:id", userHandler.DeleteUser)
+	g.GET("/users/by-phone", userHandler.GetUserByPhoneNumber)
+	g.GET("/users/stats", userHandler.GetUserStats)
+	g.GET("/users/activity-trend", userHandler.GetUserActivityTrend)
+	g.GET("/users/login-analytics", userHandler.GetLoginAnalytics)
+	g.GET("/users/agreement-stats", userHandler.GetAgreementStats)
+	g.GET("/users/app-version-distribution", userHandler.GetAppVersionDistribution)
+	g.GET("/users/inactive", userHandler.GetInactiveUsers)
+	g.GET("/users/engagement", userHandler.GetUserEngagement)
+	g.GET("/users/export", userHandler.ExportUsers)
 }
 
 func setupAdminManagementRoutes(g *echo.Group, adminHandler *handler.AdminHandler) {
-	g.POST(schemas.RouteAdminUsers, adminHandler.CreateAdminUser)
-	g.GET(schemas.RouteAdminUserByID, adminHandler.GetAdminUserByID)
-	g.GET(schemas.RouteAdminUsers, adminHandler.ListAdminUsers)
-	g.PUT(schemas.RouteAdminUserByID, adminHandler.UpdateAdminUser)
-	g.DELETE(schemas.RouteAdminUserByID, adminHandler.DeleteAdminUser)
-	g.POST("/api/v1/admin/users/:id/deactivate", adminHandler.DeactivateAdminUser)
+	g.POST("/admin/users", adminHandler.CreateAdminUser)
+	g.GET("/admin/users/:id", adminHandler.GetAdminUserByID)
+	g.GET("/admin/users", adminHandler.ListAdminUsers)
+	g.PUT("/admin/users/:id", adminHandler.UpdateAdminUser)
+	g.DELETE("/admin/users/:id", adminHandler.DeleteAdminUser)
+	g.POST("/admin/users/:id/deactivate", adminHandler.DeactivateAdminUser)
 }
 
 func setupAdminRoleRoutes(g *echo.Group, adminHandler *handler.AdminHandler) {
-	g.POST(schemas.RouteAdminRoles, adminHandler.CreateAdminRole)
-	g.GET(schemas.RouteAdminRoleByID, adminHandler.GetAdminRoleByID)
-	g.GET(schemas.RouteAdminRoles, adminHandler.ListAdminRoles)
-	g.PUT(schemas.RouteAdminRoleByID, adminHandler.UpdateAdminRole)
-	g.DELETE(schemas.RouteAdminRoleByID, adminHandler.DeleteAdminRole)
+	g.POST("/admin/roles", adminHandler.CreateAdminRole)
+	g.GET("/admin/roles/:id", adminHandler.GetAdminRoleByID)
+	g.GET("/admin/roles", adminHandler.ListAdminRoles)
+	g.PUT("/admin/roles/:id", adminHandler.UpdateAdminRole)
+	g.DELETE("/admin/roles/:id", adminHandler.DeleteAdminRole)
 }
 
 func setupAdminReportRoutes(g *echo.Group, reportHandler *handler.ReportHandler) {
-	g.POST(schemas.RouteAdminReports, reportHandler.CreateUserReport)
-	g.GET(schemas.RouteAdminReportsByID, reportHandler.GetUserReportByID)
-	g.GET(schemas.RouteAdminReports, reportHandler.ListUserReports)
-	g.DELETE(schemas.RouteAdminReportsByID, reportHandler.DeleteUserReport)
+	g.POST("/admin/reports", reportHandler.CreateUserReport)
+	g.GET("/admin/reports/:id", reportHandler.GetUserReportByID)
+	g.GET("/admin/reports", reportHandler.ListUserReports)
+	g.DELETE("/admin/reports/:id", reportHandler.DeleteUserReport)
 
-	g.GET(schemas.RouteReportsDashboard, reportHandler.GetDashboard)
-	g.GET(schemas.RouteReportsUserActivity, reportHandler.GetUserActivity)
-	g.GET(schemas.RouteReportsStressAnalytics, reportHandler.GetStressAnalytics)
-	g.GET(schemas.RouteReportsBodyTension, reportHandler.GetBodyTensionReport)
-	g.GET(schemas.RouteReportsCognitivePatterns, reportHandler.GetCognitivePatterns)
-	g.GET(schemas.RouteReportsMoodTrends, reportHandler.GetMoodTrends)
-	g.GET(schemas.RouteReportsEngagement, reportHandler.GetEngagement)
-	g.GET(schemas.RouteReportsWeeklyProgress, reportHandler.GetWeeklyProgress)
-	g.GET(schemas.RouteReportsExport, reportHandler.ExportData)
+	g.GET("/reports/dashboard", reportHandler.GetDashboard)
+	g.GET("/reports/user-activity", reportHandler.GetUserActivity)
+	g.GET("/reports/stress-analytics", reportHandler.GetStressAnalytics)
+	g.GET("/reports/body-tension", reportHandler.GetBodyTensionReport)
+	g.GET("/reports/cognitive-patterns", reportHandler.GetCognitivePatterns)
+	g.GET("/reports/mood-trends", reportHandler.GetMoodTrends)
+	g.GET("/reports/engagement", reportHandler.GetEngagement)
+	g.GET("/reports/weekly-progress", reportHandler.GetWeeklyProgress)
+	g.GET("/reports/export", reportHandler.ExportData)
 }
 
 func setupAdminDataRoutes(
@@ -344,22 +345,22 @@ func setupAdminDataRoutes(
 	mindfulnessHandler *handler.MindfulnessHandler,
 	reportHandler *handler.ReportHandler,
 ) {
-	g.GET(schemas.RouteCalendars, calendarHandler.ListCalendarEntries)
-	g.GET(schemas.RouteEmotionInteractions, emotionHandler.ListEmotionInteractions)
-	g.GET(schemas.RouteStressEvents, emotionHandler.ListStressEvents)
-	g.GET(schemas.RouteBodyTensionMaps, emotionHandler.ListBodyTensionMaps)
-	g.GET(schemas.RouteBreathingSessions, breathingHandler.ListBreathingSessions)
-	g.GET(schemas.RouteCognitiveGames, cognitiveHandler.ListCognitiveGames)
-	g.GET(schemas.RouteMentalMusts, mentalMustHandler.ListMentalMusts)
-	g.GET(schemas.RouteNegativeThoughts, negativeThoughtHandler.ListNegativeThoughts)
-	g.GET(schemas.RouteMindCourtEvidence, mindCourtHandler.ListMindCourtEvidence)
-	g.GET(schemas.RouteConflictExercises, conflictExerciseHandler.ListConflictExercises)
-	g.GET(schemas.RouteMoodTracker, moodTrackerHandler.ListMoodTrackers)
-	g.GET(schemas.RouteRolesValues, roleValueHandler.ListRolesValues)
-	g.GET(schemas.RouteSkyThoughts, skyThoughtHandler.ListSkyThoughts)
-	g.GET(schemas.RouteMindfulTimers, mindfulnessHandler.ListMindfulTimers)
-	g.GET(schemas.RouteAcceptanceExercises, mindfulnessHandler.ListAcceptanceExercises)
-	g.GET("/api/v1/reports/weekly", reportHandler.ListWeeklyReports)
+	g.GET("/calendars", calendarHandler.ListCalendarEntries)
+	g.GET("/emotion-interactions", emotionHandler.ListEmotionInteractions)
+	g.GET("/stress-events", emotionHandler.ListStressEvents)
+	g.GET("/body-tension-maps", emotionHandler.ListBodyTensionMaps)
+	g.GET("/breathing-sessions", breathingHandler.ListBreathingSessions)
+	g.GET("/cognitive-games", cognitiveHandler.ListCognitiveGames)
+	g.GET("/mental-musts", mentalMustHandler.ListMentalMusts)
+	g.GET("/negative-thoughts", negativeThoughtHandler.ListNegativeThoughts)
+	g.GET("/mind-court-evidence", mindCourtHandler.ListMindCourtEvidence)
+	g.GET("/conflict-exercises", conflictExerciseHandler.ListConflictExercises)
+	g.GET("/mood-tracker", moodTrackerHandler.ListMoodTrackers)
+	g.GET("/roles-values", roleValueHandler.ListRolesValues)
+	g.GET("/sky-thoughts", skyThoughtHandler.ListSkyThoughts)
+	g.GET("/mindful-timers", mindfulnessHandler.ListMindfulTimers)
+	g.GET("/acceptance-exercises", mindfulnessHandler.ListAcceptanceExercises)
+	g.GET("/reports/weekly", reportHandler.ListWeeklyReports)
 }
 
 func healthCheckHandler(c echo.Context) error {
@@ -377,18 +378,18 @@ func publicHealthCheckHandler(c echo.Context) error {
 }
 
 func setupMediaContentRoutes(g *echo.Group, mediaContentHandler *handler.WeeklyMediaContentHandler) {
-	g.GET(schemas.RouteWeeklyMediaContents, mediaContentHandler.ListMediaContent)
-	g.GET(schemas.RouteWeeklyMediaContentByID, mediaContentHandler.GetMediaContentByID)
-	g.GET(schemas.RouteWeeklyMediaByWeek, mediaContentHandler.GetMediaContentByWeek)
-	g.GET(schemas.RouteMediaDownload, mediaContentHandler.DownloadMediaContent)
+	g.GET("/media/weekly", mediaContentHandler.ListMediaContent)
+	g.GET("/media/weekly/:id", mediaContentHandler.GetMediaContentByID)
+	g.GET("/media/weekly/by-week/:week_number", mediaContentHandler.GetMediaContentByWeek)
+	g.GET("/media/weekly/:id/download", mediaContentHandler.DownloadMediaContent)
 }
 
 func setupAdminMediaContentRoutes(g *echo.Group, mediaContentHandler *handler.WeeklyMediaContentHandler) {
-	g.POST(schemas.RouteWeeklyMediaContents, mediaContentHandler.UploadMediaContent)
-	g.GET(schemas.RouteWeeklyMediaContents, mediaContentHandler.ListMediaContent)
-	g.GET(schemas.RouteWeeklyMediaContentByID, mediaContentHandler.GetMediaContentByID)
-	g.PUT(schemas.RouteWeeklyMediaContentByID, mediaContentHandler.UpdateMediaContent)
-	g.DELETE(schemas.RouteWeeklyMediaContentByID, mediaContentHandler.DeleteMediaContent)
-	g.GET(schemas.RouteWeeklyMediaByWeek, mediaContentHandler.GetMediaContentByWeek)
-	g.GET(schemas.RouteMediaDownload, mediaContentHandler.DownloadMediaContent)
+	g.POST("/media/weekly", mediaContentHandler.UploadMediaContent)
+	g.GET("/media/weekly", mediaContentHandler.ListMediaContent)
+	g.GET("/media/weekly/:id", mediaContentHandler.GetMediaContentByID)
+	g.PUT("/media/weekly/:id", mediaContentHandler.UpdateMediaContent)
+	g.DELETE("/media/weekly/:id", mediaContentHandler.DeleteMediaContent)
+	g.GET("/media/weekly/by-week/:week_number", mediaContentHandler.GetMediaContentByWeek)
+	g.GET("/media/weekly/:id/download", mediaContentHandler.DownloadMediaContent)
 }

@@ -20,6 +20,9 @@ func NewAdminUserRepository(db *gorm.DB) *AdminUserRepository {
 }
 
 func (r *AdminUserRepository) Create(ctx context.Context, adminUser *models.AdminUser) error {
+	if adminUser.RoleID == "" {
+		return r.DB.WithContext(ctx).Omit("role_id").Create(adminUser).Error
+	}
 	return r.BaseRepository.Create(ctx, adminUser)
 }
 
@@ -63,7 +66,10 @@ func (r *AdminUserRepository) GetByRefreshToken(ctx context.Context, refreshToke
 }
 
 func (r *AdminUserRepository) Update(ctx context.Context, adminUser *models.AdminUser) error {
-	return r.BaseRepository.Update(ctx, adminUser)
+	if adminUser.RoleID == "" {
+		return r.DB.WithContext(ctx).Model(adminUser).Omit("role_id").Updates(adminUser).Error
+	}
+	return r.DB.WithContext(ctx).Save(adminUser).Error
 }
 
 func (r *AdminUserRepository) Delete(ctx context.Context, id string) error {

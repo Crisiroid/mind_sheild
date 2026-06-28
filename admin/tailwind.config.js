@@ -1,0 +1,116 @@
+export default {
+    content: [
+        "./index.html",
+        "./src/**/*.{js,ts,jsx,tsx}",
+    ],
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Vazirmatn', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+                primary: {
+                    50: '#f0f7ff',
+                    100: '#e0effe',
+                    200: '#b9dffd',
+                    300: '#7cc5fb',
+                    400: '#36aaf5',
+                    500: '#0e8de3',
+                    600: '#006fc5',
+                    700: '#0059a3',
+                    800: '#004b87',
+                    900: '#003f70',
+                    950: '#002547',
+                },
+                neutral: {
+                    50: '#fafafa',
+                    100: '#f5f5f5',
+                    200: '#e5e5e5',
+                    300: '#d4d4d4',
+                    400: '#a3a3a3',
+                    500: '#737373',
+                    600: '#525252',
+                    700: '#404040',
+                    800: '#262626',
+                    900: '#171717',
+                    950: '#0a0a0a',
+                },
+                success: {
+                    50: '#f0fdf4',
+                    100: '#dcfce7',
+                    500: '#22c55e',
+                    600: '#16a34a',
+                    700: '#15803d',
+                },
+                warning: {
+                    50: '#fffbeb',
+                    100: '#fef3c7',
+                    500: '#f59e0b',
+                    600: '#d97706',
+                    700: '#b45309',
+                },
+                error: {
+                    50: '#fef2f2',
+                    100: '#fee2e2',
+                    500: '#ef4444',
+                    600: '#dc2626',
+                    700: '#b91c1c',
+                },
+            },
+            boxShadow: {
+                'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+                'DEFAULT': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+                'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+                'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+                'soft': '0 2px 15px -3px rgb(0 0 0 / 0.07), 0 10px 20px -2px rgb(0 0 0 / 0.04)',
+                'soft-lg': '0 10px 40px -10px rgb(0 0 0 / 0.1)',
+                'inner-sm': 'inset 0 2px 4px 0 rgb(0 0 0 / 0.06)',
+            },
+            borderRadius: {
+                'none': '0',
+                'sm': '0.375rem',
+                'DEFAULT': '0.5rem',
+                'md': '0.625rem',
+                'lg': '0.75rem',
+                'xl': '1rem',
+                '2xl': '1.25rem',
+                'full': '9999px',
+            },
+            spacing: {
+                '18': '4.5rem',
+                '88': '22rem',
+                '128': '32rem',
+            },
+            animation: {
+                'fade-in-up': 'fadeInUp 0.4s ease-out',
+                'slide-in-right': 'slideInRight 0.3s ease-out',
+                'pulse-soft': 'pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+                fadeInUp: {
+                    '0%': { opacity: '0', transform: 'translateY(20px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                slideInRight: {
+                    '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                    '100%': { opacity: '1', transform: 'translateX(0)' },
+                },
+                pulseSoft: {
+                    '0%, 100%': { opacity: '1' },
+                    '50%': { opacity: '.7' },
+                },
+                float: {
+                    '0%, 100%': { transform: 'translateY(0px)' },
+                    '50%': { transform: 'translateY(-20px)' },
+                },
+            },
+            transitionTimingFunction: {
+                'ease-out': 'cubic-bezier(0.16, 1, 0.3, 1)',
+                'ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+            },
+        },
+    },
+    plugins: [],
+}

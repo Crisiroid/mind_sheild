@@ -62,12 +62,17 @@ func (s *AdminUserService) CreateAdminUser(ctx context.Context, req *schemas.Adm
 		return nil, fmt.Errorf("خطا در رمزنگاری رمز عبور: %w", err)
 	}
 
+	roleID := req.RoleID
+	if roleID == "" {
+		roleID = ""
+	}
+
 	adminUser := &models.AdminUser{
 		Username:     req.Username,
 		Email:        req.Email,
 		PasswordHash: passwordHash,
 		FullName:     req.FullName,
-		RoleID:       req.RoleID,
+		RoleID:       roleID,
 		IsActive:     req.IsActive,
 	}
 
@@ -75,7 +80,12 @@ func (s *AdminUserService) CreateAdminUser(ctx context.Context, req *schemas.Adm
 		return nil, fmt.Errorf("خطا در ایجاد مدیر: %w", err)
 	}
 
-	return s.toAdminUserResponse(adminUser), nil
+	createdAdmin, err := s.adminUserRepo.GetByID(ctx, adminUser.ID.String())
+	if err != nil {
+		return nil, fmt.Errorf("خطا در دریافت مدیر ایجاد شده: %w", err)
+	}
+
+	return s.toAdminUserResponse(createdAdmin), nil
 }
 
 func (s *AdminUserService) GetAdminUserById(ctx context.Context, adminUserId string) (*schemas.AdminUserResponse, error) {
